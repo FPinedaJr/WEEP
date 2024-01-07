@@ -11,22 +11,22 @@ from django.core.paginator import Paginator
 from django.http import Http404
 
 
-# def home(request):
-#     if request.user.is_authenticated:
-#         form = MeepForm(request.POST or None)
-#         if request.user.is_authenticated:
-#             if form.is_valid():
-#                 meep = form.save(commit=False)
-#                 meep.user = request.user
-#                 meep.save()
-#                 messages.success(request, ("Your Meeps Has Been Posted"))
-#                 return redirect('home')
+def home(request):
+    if request.user.is_authenticated:
+        form = MeepForm(request.POST or None)
+        if request.user.is_authenticated:
+            if form.is_valid():
+                meep = form.save(commit=False)
+                meep.user = request.user
+                meep.save()
+                messages.success(request, ("Your Meeps Has Been Posted"))
+                return redirect('home')
             
-#         meeps = Meep.objects.all().order_by("-created_at")
-#         return render(request, 'home.html', {"meeps": meeps, "form":form})
-#     else:
-#         meeps = Meep.objects.all().order_by("-created_at")
-#         return render(request, 'home.html', {"meeps":meeps})
+        meeps = Meep.objects.all().order_by("-created_at")
+        return render(request, 'home.html', {"meeps": meeps, "form":form})
+    else:
+        meeps = Meep.objects.all().order_by("-created_at")
+        return render(request, 'home.html', {"meeps":meeps})
 
 def profile_list(request):
     if request.user.is_authenticated:
@@ -292,65 +292,20 @@ def is_ajax(request):
     return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
 
-# @require_GET
-# def post_list(request):
-#     """
-#     List view for posts.
-#     """
-#     all_posts = Meep.objects.order_by('-pk').all()
-#     paginator = Paginator(all_posts, per_page=10)
-#     page_num = int(request.GET.get("page", 1))
-#     if page_num > paginator.num_pages:
-#         raise Http404
-#     posts = paginator.page(page_num)
-#     if is_ajax(request):
-#         print("ajaxed")
-#         return render(request, 'show_meeps.html', {'posts': posts})
-#     print("not ajaxed")
-#     return render(request, 'home.html', {'posts': posts})
-
-
 @require_GET
 def post_list(request):
     """
     List view for posts.
     """
+    all_posts = Meep.objects.order_by('-pk').all()
+    paginator = Paginator(all_posts, per_page=10)
+    page_num = int(request.GET.get("page", 1))
+    if page_num > paginator.num_pages:
+        raise Http404
+    posts = paginator.page(page_num)
+    if is_ajax(request):
+        print("ajaxed")
+        return render(request, 'show_meeps.html', {'posts': posts})
+    print("not ajaxed")
+    return render(request, 'home.html', {'posts': posts})
 
-
-
-    if request.user.is_authenticated:
-        form = MeepForm(request.POST or None)
-        if request.user.is_authenticated:
-            if form.is_valid():
-                meep = form.save(commit=False)
-                meep.user = request.user
-                meep.save()
-                messages.success(request, ("Your Meeps Has Been Posted"))
-                return redirect('home')
-
-        meeps = Meep.objects.all().order_by("-created_at")
-        all_posts = Meep.objects.order_by('-pk').all()
-        paginator = Paginator(all_posts, per_page=10)
-        page_num = int(request.GET.get("page", 1))
-        if page_num > paginator.num_pages:
-            raise Http404
-        posts = paginator.page(page_num)
-        if is_ajax(request):
-            print("ajaxed")
-            return render(request, 'show_meeps.html', {'posts': posts})
-        print("not ajaxed")
-        return render(request, 'home.html', {"meeps": meeps, "form": form, 'posts': posts})# Ensure that the result of the load function is returned here
-
-    else:
-        meeps = Meep.objects.all().order_by("-created_at")
-        all_posts = Meep.objects.order_by('-pk').all()
-        paginator = Paginator(all_posts, per_page=10)
-        page_num = int(request.GET.get("page", 1))
-        if page_num > paginator.num_pages:
-            raise Http404
-        posts = paginator.page(page_num)
-        if is_ajax(request):
-            print("ajaxed")
-            return render(request, 'show_meeps.html', {'posts': posts})
-        print("not ajaxed")
-        return render(request, 'home.html', {"meeps": meeps, 'posts': posts})# Ensur # Ensure that the result of the load function is returned here
