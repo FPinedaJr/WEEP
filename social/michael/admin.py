@@ -6,11 +6,12 @@ admin.site.unregister(Group)
 
 class ProfileInline(admin.StackedInline):
     model = Profile
-    fields = ["username"]
+    fields = ['user', 'profile_image', 'profile_bio', 'homepage_link', 'facebook_link', 'instagram_link', 'linkedin_link']
+    can_delete = False
 
 class UserAdmin(admin.ModelAdmin):
     model = User
-    fields = ["username"]
+    fields = ['username', 'email', 'first_name', 'last_name']
     inlines = [ProfileInline]
 
 admin.site.unregister(User)
